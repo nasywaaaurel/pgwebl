@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 class PointsController extends Controller
 {
-
     public function __construct()
     {
         $this->points = new PointsModel();
@@ -20,7 +19,6 @@ class PointsController extends Controller
         $data = [
             'title' => 'Map',
         ];
-
         return view('map', $data);
     }
 
@@ -37,17 +35,35 @@ class PointsController extends Controller
      */
     public function store(Request $request)
     {
+        //Validation
+
+        $request->validate(
+            [
+                'name' => 'required|unique:points,name',
+                'description' => 'required',
+                'geom_point' => 'required',
+            ],
+            [
+                'name.required' => 'Name is required',
+                'name.unique' => 'Name all ready exists',
+                'description.required' => 'Description is required',
+                'geom_point.requires' => 'Geometry point is required'
+            ]
+        );
+
         $data = [
             'geom' => $request->geom_point,
             'name' => $request->name,
             'description' => $request->description,
         ];
 
-        //create data
-        $this->points->create($data);
+        //insert data
+        if (!$this->points->create($data)) {
+            return redirect()->route('map')->with('success', 'Point failed to add');
+        }
 
-        // redirect to map
-        return redirect()->route('map');
+        //Redirect to Map
+        return redirect()->route('map')->with('success', 'Point has been added');
     }
 
     /**
