@@ -95,15 +95,76 @@ class PointsController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $data = [
+            'title' => 'Edit Point',
+            'id' => $id,
+        ];
+
+        return view('edit-point', $data);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id) //BARU
     {
-        //
+        //Validation
+
+        $request->validate(
+            [
+                'name' => 'required|unique:points,name,' . $id, //BARU
+                'description' => 'required',
+                'geom_point' => 'required',
+                'image' => 'nullable|mimes:jpeg,png,gif,svg|max:2048',
+            ],
+            [
+                'name.required' => 'Name is required',
+                'name.unique' => 'Name all ready exists',
+                'description.required' => 'Description is required',
+                'geom_point.required' => 'Geometry point is required'
+            ]
+        );
+
+        // Create image directory if not exist
+        if (!is_dir('storage/images')) {
+            mkdir('./storage/images', 0777);
+        }
+
+        // Get old image file name (BARU)
+        $old_image = $this->points->find($id)->image;
+
+        // Get image file
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $name_image = time() . "_point." . strtolower
+            ($image->getClientOriginalExtension());
+            $image->move('storage/images', $name_image);
+
+
+            //Delete old image file
+            if ($old_image != null) {
+                if (file_exists('./storage/images/' . $old_image)) {
+                unlink('./storage/images/' . $old_image);
+                }
+            }
+        } else {
+            $name_image = $old_image;
+        }
+
+        $data = [
+            'geom' => $request->geom_point,
+            'name' => $request->name,
+            'description' => $request->description,
+            'image' => $name_image,
+        ];
+
+        //update data (BARU)
+        if (!$this->points->find($id)->update($data)) {
+            return redirect()->route('map')->with('success', 'Point failed to add');
+        }
+
+        //Redirect to Map
+        return redirect()->route('map')->with('success', 'Point has been added');
     }
 
     /**
