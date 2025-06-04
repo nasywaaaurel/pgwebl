@@ -17,7 +17,10 @@ class PolygonsController extends Controller
      */
     public function index()
     {
-        //
+        $data = [
+            'title' => 'Map',
+        ];
+        return view('map', $data);
     }
 
     /**
@@ -68,6 +71,7 @@ class PolygonsController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'image' => $name_image,
+            'user_id' => auth()->user()->id,
         ];
 
         // Create data
