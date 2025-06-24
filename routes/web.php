@@ -1,20 +1,27 @@
 <?php
 
-use function Laravel\Prompts\table;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\PointsController;
+use App\Http\Controllers\PublicController;
 use App\Http\Controllers\ProfileController;
-
 use App\Http\Controllers\PolygonsController;
 use App\Http\Controllers\PolylinesController;
-use App\Http\Controllers\PublicController;
+use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\KontakController;
+
 
 Route::get('/', [PublicController::class, 'index'])->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+// Route halaman berita
+Route::get('/berita', [BeritaController::class, 'index'])->name('berita');
+// Route Kontak
+Route::get('/kontak', [KontakController::class, 'index'])->name('kontak');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -28,6 +35,5 @@ Route::resource('polygons', PolygonsController::class);
 
 Route::get('/map', [PointsController::class, 'index'])->middleware(['auth', 'verified'])->name('map');
 Route::get('/table', [TableController::class, 'index'])->name('table');
-
 
 require __DIR__ . '/auth.php';

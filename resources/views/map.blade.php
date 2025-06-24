@@ -168,7 +168,7 @@
     <script src="https://unpkg.com/@terraformer/wkt"></script>
 
     <script>
-        var map = L.map('map').setView([-7.777457079987586, 110.37388215598828], 13);
+        var map = L.map('map').setView([-7.684076135646513, 109.67043338302722], 11);
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

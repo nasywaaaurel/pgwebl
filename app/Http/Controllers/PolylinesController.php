@@ -138,15 +138,14 @@ class PolylinesController extends Controller
         // Get image file
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $name_image = time() . "_polyline." . strtolower
-            ($image->getClientOriginalExtension());
+            $name_image = time() . "_polyline." . strtolower($image->getClientOriginalExtension());
             $image->move('storage/images', $name_image);
 
 
             //Delete old image file BARU
             if ($old_image != null) {
                 if (file_exists('./storage/images/' . $old_image)) {
-                unlink('./storage/images/' . $old_image);
+                    unlink('./storage/images/' . $old_image);
                 }
             }
         } else {
